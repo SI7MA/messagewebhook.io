@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>отправь мне сообщение</title>
+</head>
+<body>
+    <h2>Введите сообщение для отправки:</h2>
+    <form id="messageForm">
+        <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
+        <button type="submit">Отправить</button>
+    </form>
+
+    <script>
+        document.getElementById("messageForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            sendMessageToDiscord();
+        });
+
+        async function sendMessageToDiscord() {
+            const url = 'https://discordapp.com/api/webhooks/1251996126123393155/_Ukzn_4_xNuka1Fo0O-jzHT_TdqYLNecKugoHlgWBc2SMCNXPzXPGB4s8c332EgaRkM0'; // Замените на ваш реальный URL вебхука Discord
+
+            const message = document.getElementById('message').value;
+
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                const ipAddress = ipData.ip;
+
+                const data = {
+                    content: `сообщение: ${message}\nIP Address: ${ipAddress}`
+                };
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('');
+                }
+
+                alert('');
+                document.getElementById('message').value = ''; // Очистить поле ввода после отправки
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при отправке сообщения на Discord');
+            }
+        }
+    </script>
+</body>
+</html>
